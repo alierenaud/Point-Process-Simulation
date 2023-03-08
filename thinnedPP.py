@@ -129,116 +129,116 @@ st = time.time()
 
 for j in range(N):
 
-    # ### birth death proposals
+    ### birth death proposals
     
-    # for i in range(n_0_prop):
+    for i in range(n_0_prop):
     
-    #     if random.uniform() < b(n_0_current):
+        if random.uniform() < b(n_0_current):
             
-    #         s_new = random.uniform(size=2)
-    #         d_new = distance_matrix(X_current,[s_new])
-    #         Sigma_new = var*np.exp(-theta*d_new)
-    #         w = Sigma_inv_current@Sigma_new
-    #         wtb = np.inner(w[:,0],Sigma_new[:,0])
-    #         d = var - wtb
-    #         g_new = np.sqrt(d) * random.normal() + np.inner(w[:,0], g_current)
-    #         y_new = truncnorm.rvs(a=-np.inf,b=-g_new,loc=g_new)
+            s_new = random.uniform(size=2)
+            d_new = distance_matrix(X_current,[s_new])
+            Sigma_new = var*np.exp(-theta*d_new)
+            w = Sigma_inv_current@Sigma_new
+            wtb = np.inner(w[:,0],Sigma_new[:,0])
+            d = var - wtb
+            g_new = np.sqrt(d) * random.normal() + np.inner(w[:,0], g_current)
+            y_new = truncnorm.rvs(a=-np.inf,b=-g_new,loc=g_new)
             
-    #         acc = lam / (n_0_current+1) * (1-b(n_0_current+1))/b(n_0_current) * norm.cdf(-g_new)
-    #         # print("insert accept prob:",acc)
+            acc = lam / (n_0_current+1) * (1-b(n_0_current+1))/b(n_0_current) * norm.cdf(-g_new)
+            # print("insert accept prob:",acc)
             
-    #         if random.uniform() < acc:
+            if random.uniform() < acc:
                 
-    #             ### updates
+                ### updates
                 
-    #             Sigma_current = np.append(np.append(Sigma_current,Sigma_new,axis=1),[np.append(Sigma_new,var)],axis=0)
-    #             # Sigma_inv_current = np.linalg.inv(Sigma_current)
+                Sigma_current = np.append(np.append(Sigma_current,Sigma_new,axis=1),[np.append(Sigma_new,var)],axis=0)
+                # Sigma_inv_current = np.linalg.inv(Sigma_current)
                 
                 
-    #             ### astuce
+                ### astuce
                 
-    #             Sigma_inv_current = np.append(np.append(Sigma_inv_current + np.outer(w,w)/d,-w/d,axis=1),[np.append(-w/d,1/d)],axis=0)
+                Sigma_inv_current = np.append(np.append(Sigma_inv_current + np.outer(w,w)/d,-w/d,axis=1),[np.append(-w/d,1/d)],axis=0)
                 
-    #             # print(Sigma_current@Sigma_inv_current)
+                # print(Sigma_current@Sigma_inv_current)
                 
-    #             n_0_current += 1
+                n_0_current += 1
                 
-    #             X_current = np.append(X_current, [s_new], axis=0)
-    #             g_current = np.append(g_current, g_new)
-    #             y_current = np.append(y_current, y_new)
+                X_current = np.append(X_current, [s_new], axis=0)
+                g_current = np.append(g_current, g_new)
+                y_current = np.append(y_current, y_new)
                 
-    #     else:
+        else:
             
-    #         ### deletion
-    #         ind_del = random.randint(n_1,n_1 + n_0_current)
+            ### deletion
+            ind_del = random.randint(n_1,n_1 + n_0_current)
             
-    #         g_old = g_current[ind_del]
-    #         y_old = y_current[ind_del]
+            g_old = g_current[ind_del]
+            y_old = y_current[ind_del]
             
-    #         acc = n_0_current/lam * b(n_0_current-1)/(1-b(n_0_current)) / norm.cdf(-g_old)
-    #         # print("delete accept prob:",acc)    
+            acc = n_0_current/lam * b(n_0_current-1)/(1-b(n_0_current)) / norm.cdf(-g_old)
+            # print("delete accept prob:",acc)    
     
-    #         if random.uniform() < acc:
+            if random.uniform() < acc:
     
-    #             ### updates
+                ### updates
                 
-    #             Sigma_current = np.delete(np.delete(Sigma_current,ind_del,axis=0),ind_del,axis=1)
-    #             # Sigma_inv_current = np.linalg.inv(Sigma_current)
+                Sigma_current = np.delete(np.delete(Sigma_current,ind_del,axis=0),ind_del,axis=1)
+                # Sigma_inv_current = np.linalg.inv(Sigma_current)
                 
                 
-    #             ## astuce
+                ## astuce
                 
-    #             f = Sigma_inv_current[ind_del,ind_del]
-    #             e = np.delete(Sigma_inv_current[ind_del],ind_del)
+                f = Sigma_inv_current[ind_del,ind_del]
+                e = np.delete(Sigma_inv_current[ind_del],ind_del)
                 
-    #             Sigma_inv_current = np.delete(np.delete(Sigma_inv_current,ind_del,axis=0),ind_del,axis=1) - 1/f*np.outer(e,e)
+                Sigma_inv_current = np.delete(np.delete(Sigma_inv_current,ind_del,axis=0),ind_del,axis=1) - 1/f*np.outer(e,e)
                 
-    #             # print(Sigma_current@Sigma_inv_current)
+                # print(Sigma_current@Sigma_inv_current)
                 
-    #             n_0_current -= 1
+                n_0_current -= 1
                 
-    #             X_current = np.delete(X_current, ind_del, axis=0)
-    #             g_current = np.delete(g_current, ind_del)
-    #             y_current = np.delete(y_current, ind_del)
+                X_current = np.delete(X_current, ind_del, axis=0)
+                g_current = np.delete(g_current, ind_del)
+                y_current = np.delete(y_current, ind_del)
     
     
-    ### retrospective sampler
+    # ## retrospective sampler
     
     
-    n_new = random.poisson(lam,1)
-    X_new = random.uniform(size=(n_new[0],2))
+    # n_new = random.poisson(lam,1)
+    # X_new = random.uniform(size=(n_new[0],2))
     
-    d_new = distance_matrix(X_current,X_new)
-    D_new = distance_matrix(X_new,X_new)
-    cov_new = var*np.exp(-theta*d_new)
-    var_new = var*np.exp(-theta*D_new)
+    # d_new = distance_matrix(X_current,X_new)
+    # D_new = distance_matrix(X_new,X_new)
+    # cov_new = var*np.exp(-theta*d_new)
+    # var_new = var*np.exp(-theta*D_new)
     
-    W = Sigma_inv_current@cov_new
-    BtW = np.transpose(cov_new)@W
-    condVar_new = var_new - BtW
-    g_new = np.linalg.cholesky(condVar_new) @ random.normal(size=n_new) + np.transpose(W)@g_current
+    # W = Sigma_inv_current@cov_new
+    # BtW = np.transpose(cov_new)@W
+    # condVar_new = var_new - BtW
+    # g_new = np.linalg.cholesky(condVar_new) @ random.normal(size=n_new) + np.transpose(W)@g_current
     
-    y_new = np.zeros(n_new)
-    for i in np.arange(n_new):
-        y_new[i] = random.normal(g_new[i])
+    # y_new = np.zeros(n_new)
+    # for i in np.arange(n_new):
+    #     y_new[i] = random.normal(g_new[i])
 
-    ### updates
+    # ### updates
 
-    X_0_new = X_new[y_new<0]    
-    g_0_new = g_new[y_new<0] 
-    y_0_new = y_new[y_new<0] 
+    # X_0_new = X_new[y_new<0]    
+    # g_0_new = g_new[y_new<0] 
+    # y_0_new = y_new[y_new<0] 
     
-    n_0_current = X_0_new.shape[0]
+    # n_0_current = X_0_new.shape[0]
     
-    X_current = np.append(X_current[:n_1], X_0_new, axis=0)
-    g_current = np.append(g_current[:n_1], g_0_new)
-    y_current = np.append(y_current[:n_1], y_0_new)
+    # X_current = np.append(X_current[:n_1], X_0_new, axis=0)
+    # g_current = np.append(g_current[:n_1], g_0_new)
+    # y_current = np.append(y_current[:n_1], y_0_new)
     
-    Sigma_current = np.append(np.append(Sigma_current[:n_1,:n_1],cov_new[:n_1,y_new<0],axis=1),np.append(np.transpose(cov_new[:n_1,y_new<0]),var_new[y_new<0][:,y_new<0],axis=1),axis=0)
+    # Sigma_current = np.append(np.append(Sigma_current[:n_1,:n_1],cov_new[:n_1,y_new<0],axis=1),np.append(np.transpose(cov_new[:n_1,y_new<0]),var_new[y_new<0][:,y_new<0],axis=1),axis=0)
     
-    ### implementer astuce
+    # ### implementer astuce
     
-    Sigma_inv_current = np.linalg.inv(Sigma_current)
+    # Sigma_inv_current = np.linalg.inv(Sigma_current)
 
     ### update y
     
@@ -267,7 +267,7 @@ for j in range(N):
         ### showcase X_0_current and X_1 processes
         fig, ax = plt.subplots()
         ax.plot(X_current[n_1:,0],X_current[n_1:,1],"o",c="silver")
-        ax.plot(X_1[:,0],X_1[:,1],"o")
+        # ax.plot(X_1[:,0],X_1[:,1],"o")
         ax.set_aspect(1)
         ax.set(xlim=(0, 1), ylim=(0, 1))
         plt.show()
